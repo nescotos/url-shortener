@@ -14,13 +14,16 @@
 
 ####Get into mongo shell then type:
 `$ use urlshortener`
+
 `$ db.counters.insert({_id: 'url_counter', seq: 1})`
 
 
 ###Testing Server
 
 `$ cd api`
+
 `$ npm install`
+
 `$ npm test`
 
 **You should see all test passing if everything is ok**
@@ -28,4 +31,5 @@
 ###Running Server
 
 `$ cd api`
+
 `$ npm start`
