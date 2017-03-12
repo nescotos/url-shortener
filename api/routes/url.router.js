@@ -7,6 +7,9 @@ module.exports = (express) => {
   .get(URLController.getAllUrls)
   .post(URLController.saveUrl);
 
+  urlRouter.route('/url/:id')
+  .get(URLController.getUrl);
+
   return urlRouter;
 
 };

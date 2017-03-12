@@ -27,13 +27,29 @@ module.exports = {
     url.longUrl = req.body.url;
     url.save((err) => {
       if(err){
-        if(err.errors.longUrl){
+        if(err.errors && err.errors.longUrl){
           return res.status(400).json({status: false, message: err.errors.longUrl.message});
+        }
+        if(err.code === 11000){
+            return res.json({status: false, message: 'Duplicated URL', shortenUrl: 'someURL'});
         }
         return res.json({status: false, message: 'Something Went Wrong'});
       }
       let shortenUrl = `${config.HOST}:${config.PORT}/${base58.encode(url._id)}`;
       return res.json({status: true, message: 'Shorten Correctly', shortenUrl: shortenUrl});
+    });
+  },
+  getUrl: (req, res) => {
+    let base58Decode = base58.decode(req.params.id);
+    console.log(base58Decode);
+    URL.findById(base58Decode, (err, url) => {
+      if(err){
+        return res.json({status: false, message: 'Something Went Wrong'});
+      }
+      if(!url){
+        return res.json({status: false, message: 'URL not found!'});
+      }
+      return res.json({status: true, message: 'Enjoy you URL', url: url.longUrl});
     });
   }
 };

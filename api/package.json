@@ -4,7 +4,8 @@
   "description": "URL Shortener API",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --watch",
+    "test": "mocha --timeout 10000",
+    "test -w" : "mocha --watch",
     "start": "node index.js",
     "watch": "nodemon"
   },

@@ -1,14 +1,19 @@
 const mongoose = require("mongoose");
+const config = require('../config');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = 'http://localhost:3000';
 const should = chai.should();
 const URL = require('../models/url.model');
-
 chai.use(chaiHttp);
 
+mongoose.connect(`${config.DATABASE.HOST}${config.DATABASE.NAME}`);
+mongoose.Promise = global.Promise;
+
 describe('URL', () => {
-	beforeEach((done) => {
+	let urlId;
+
+	before((done) => {
 		URL.remove({}, (err) => {
 			if (err) {
 				throw err;
@@ -16,9 +21,7 @@ describe('URL', () => {
 			done();
 		});
 	});
-});
 
-describe('URL', () => {
 	it('it should GET all the URLS', (done) => {
 		chai.request(server)
 			.get('/api/url')
@@ -64,109 +67,52 @@ describe('URL', () => {
 			.post('/api/url')
 			.send(data)
 			.end((err, res) => {
+				let arraySplited = res.body.shortenUrl.split('/');
+				urlId = arraySplited[arraySplited.length - 1];
 				res.should.have.status(200);
 				res.body.message.should.be.eql('Shorten Correctly');
 				res.body.status.should.be.eql(true);
+				res.body.shortenUrl.should.to.be.a('string');
+				done();
+			});
+	});
+
+	it('it should not POST the same long URL', (done) => {
+		let data = {
+			url: 'helloworld.com'
+		};
+		chai.request(server)
+			.post('/api/url')
+			.send(data)
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.body.status.should.be.eql(false);
+				res.body.message.should.be.eql('Duplicated URL');
+				res.body.shortenUrl.should.to.be.a('string');
+				done();
+			});
+	});
+
+	it('it should not GET and specific URL with invalid Id', (done) => {
+		chai.request(server)
+			.get('/api/url/sasd')
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.body.status.should.be.eql(false);
+				res.body.message.should.be.eql('URL not found!');
+				done();
+			});
+	});
+
+	it('it should GET and specific URL with valid Id', (done) => {
+		chai.request(server)
+			.get(`/api/url/${urlId}`)
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.body.status.should.be.eql(true);
+				res.body.message.should.be.eql('Enjoy you URL');
+				res.body.url.should.be.eql('helloworld.com');
 				done();
 			});
 	});
 });
-// describe('/POST book', () => {
-//     it('it should not POST a book without pages field', (done) => {
-//       let book = {
-//           title: "The Lord of the Rings",
-//           author: "J.R.R. Tolkien",
-//           year: 1954
-//       };
-//           chai.request(server)
-//           .post('/book')
-//           .send(book)
-//           .end((err, res) => {
-//               res.should.have.status(200);
-//               res.body.should.be.a('object');
-//               res.body.should.have.property('errors');
-//               res.body.errors.should.have.property('pages');
-//               res.body.errors.pages.should.have.property('kind').eql('required');
-//             done();
-//           });
-//     });
-//     it('it should POST a book ', (done) => {
-//       let book = {
-//           title: "The Lord of the Rings",
-//           author: "J.R.R. Tolkien",
-//           year: 1954,
-//           pages: 1170
-//       };
-//           chai.request(server)
-//           .post('/book')
-//           .send(book)
-//           .end((err, res) => {
-//               res.should.have.status(200);
-//               res.body.should.be.a('object');
-//               res.body.should.have.property('message').eql('Book successfully added!');
-//               res.body.book.should.have.property('title');
-//               res.body.book.should.have.property('author');
-//               res.body.book.should.have.property('pages');
-//               res.body.book.should.have.property('year');
-//             done();
-//           });
-//     });
-// });
-// describe('/GET/:id book', () => {
-//     it('it should GET a book by the given id', (done) => {
-//       let book = new Book({ title: "The Lord of the Rings", author: "J.R.R. Tolkien", year: 1954, pages: 1170 });
-//       book.save((err, book) => {
-//           chai.request(server)
-//           .get('/book/' + book.id)
-//           .send(book)
-//           .end((err, res) => {
-//               res.should.have.status(200);
-//               res.body.should.be.a('object');
-//               res.body.should.have.property('title');
-//               res.body.should.have.property('author');
-//               res.body.should.have.property('pages');
-//               res.body.should.have.property('year');
-//               res.body.should.have.property('_id').eql(book.id);
-//             done();
-//           });
-//       });
-//
-//     });
-// });
-// describe('/PUT/:id book', () => {
-//     it('it should UPDATE a book given the id', (done) => {
-//       let book = new Book({title: "The Chronicles of Narnia", author: "C.S. Lewis", year: 1948, pages: 778});
-//       book.save((err, book) => {
-//               chai.request(server)
-//               .put('/book/' + book.id)
-//               .send({title: "The Chronicles of Narnia", author: "C.S. Lewis", year: 1950, pages: 778})
-//               .end((err, res) => {
-//                   res.should.have.status(200);
-//                   res.body.should.be.a('object');
-//                   res.body.should.have.property('message').eql('Book updated!');
-//                   res.body.book.should.have.property('year').eql(1950);
-//                 done();
-//               });
-//         });
-//     });
-// });
-/*
- * Test the /DELETE/:id route
- */
-// describe('/DELETE/:id book', () => {
-//     it('it should DELETE a book given the id', (done) => {
-//       let book = new Book({title: "The Chronicles of Narnia", author: "C.S. Lewis", year: 1948, pages: 778});
-//       book.save((err, book) => {
-//               chai.request(server)
-//               .delete('/book/' + book.id)
-//               .end((err, res) => {
-//                   res.should.have.status(200);
-//                   res.body.should.be.a('object');
-//                   res.body.should.have.property('message').eql('Book successfully deleted!');
-//                   res.body.result.should.have.property('ok').eql(1);
-//                   res.body.result.should.have.property('n').eql(1);
-//                 done();
-//               });
-//         });
-//     });
-// });
