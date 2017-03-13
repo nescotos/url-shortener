@@ -3,7 +3,7 @@
 ###Required Dependencies:
 
 - NodeJS 6.3.1 or greater
-- MongoDB 3.2.9
+- MongoDB 3.0 or greater
 
 ###Packages Dependencies
 - npm install -g mocha
