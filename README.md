@@ -9,6 +9,7 @@
 - npm install -g mocha
 - npm install -g gulp-cli
 - npm install -g karma
+- npm install -g nodemon
 
 ###Setting Up MongoDB Database
 
