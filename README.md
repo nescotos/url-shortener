@@ -33,3 +33,19 @@
 `$ cd api`
 
 `$ npm start`
+
+###Testing Client
+
+`$ cd client`
+
+`$ npm install`
+
+`$ npm test`
+
+**You should see all test passing if everything is ok**
+
+###Running Client
+
+`$ cd client`
+
+`$ npm start`

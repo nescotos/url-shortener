@@ -1,7 +1,7 @@
 describe('Testing url API using the client', () => {
   let URL;
   let $httpBackend;
-  let address = 'http://localhost:3000/api/url/';
+  let address = 'http://localhost:3030/api/url/';
 
   beforeEach(angular.mock.module('url-shortener'));
 

@@ -23,25 +23,35 @@ module.exports = {
     if(!req.body.url){
       return res.status(400).json({status: false, message: 'No url provided'});
     }
-    let url = new URL();
-    url.longUrl = req.body.url;
-    url.save((err) => {
+    let httpPrefixed = req.body.url.split('://')[0];
+    if(config.SUPPORTED_PROTOCOLS.indexOf(httpPrefixed) == -1){
+      req.body.url = `http://${req.body.url}`;
+    }
+    URL.find({longUrl: req.body.url}, (err, urlFound) => {
       if(err){
-        if(err.errors && err.errors.longUrl){
-          return res.status(400).json({status: false, message: err.errors.longUrl.message});
-        }
-        if(err.code === 11000){
-            return res.json({status: false, message: 'Duplicated URL', shortenUrl: 'someURL'});
-        }
         return res.json({status: false, message: 'Something Went Wrong'});
       }
-      let shortenUrl = `${config.HOST}:${config.PORT}/${base58.encode(url._id)}`;
-      return res.json({status: true, message: 'Shorten Correctly', shortenUrl: shortenUrl});
+      if(urlFound[0]){
+        let shortenUrl = `${config.HOST}${base58.encode(urlFound[0]._id)}`;
+        return res.json({status: false, message: 'Duplicated URL', shortenUrl: shortenUrl});
+      }else{
+        let url = new URL();
+        url.longUrl = req.body.url;
+        url.save((err) => {
+          if(err){
+            if(err.errors && err.errors.longUrl){
+              return res.status(400).json({status: false, message: err.errors.longUrl.message});
+            }
+            return res.json({status: false, message: 'Something Went Wrong'});
+          }
+          let shortenUrl = `${config.HOST}${base58.encode(url._id)}`;
+          return res.json({status: true, message: 'Shorten Correctly', shortenUrl: shortenUrl});
+        });
+      }
     });
   },
   getUrl: (req, res) => {
     let base58Decode = base58.decode(req.params.id);
-    console.log(base58Decode);
     URL.findById(base58Decode, (err, url) => {
       if(err){
         return res.json({status: false, message: 'Something Went Wrong'});

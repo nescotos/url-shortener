@@ -1,7 +1,7 @@
 import app from '../app';
 
 app.constant('URL_PARTS', {
-  SERVER: 'http://localhost:3000/',
+  SERVER: 'http://localhost:3030/',
   API_ENDPOINT: 'api/url/'
 });
 
@@ -20,7 +20,7 @@ app.factory('urlapi', (URL_PARTS, $http) => {
         url : url
       }
     };
-    return $http(req);    
+    return $http(req);
   };
 
   return URL;

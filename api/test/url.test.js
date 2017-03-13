@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const config = require('../config');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = 'http://localhost:3000';
+const server = 'http://localhost:3030';
 const should = chai.should();
 const URL = require('../models/url.model');
 chai.use(chaiHttp);
@@ -59,7 +59,7 @@ describe('URL', () => {
 			});
 	});
 
-	it('it should POST with a valid URL', (done) => {
+	it('it should POST with a valid URL without http or https', (done) => {
 		let data = {
 			url: 'helloworld.com'
 		};
@@ -104,6 +104,36 @@ describe('URL', () => {
 			});
 	});
 
+	it('it should GET and specific URL with valid Id and with http prefix', (done) => {
+		chai.request(server)
+			.get(`/api/url/${urlId}`)
+			.end((err, res) => {
+				res.should.have.status(200);
+				res.body.status.should.be.eql(true);
+				res.body.message.should.be.eql('Enjoy you URL');
+				res.body.url.should.be.eql('http://helloworld.com');
+				done();
+			});
+	});
+
+	it('it should POST with a valid URL with http or https', (done) => {
+		let data = {
+			url: 'http://whatsapp.com'
+		};
+		chai.request(server)
+			.post('/api/url')
+			.send(data)
+			.end((err, res) => {
+				let arraySplited = res.body.shortenUrl.split('/');
+				urlId = arraySplited[arraySplited.length - 1];
+				res.should.have.status(200);
+				res.body.message.should.be.eql('Shorten Correctly');
+				res.body.status.should.be.eql(true);
+				res.body.shortenUrl.should.to.be.a('string');
+				done();
+			});
+	});
+
 	it('it should GET and specific URL with valid Id', (done) => {
 		chai.request(server)
 			.get(`/api/url/${urlId}`)
@@ -111,7 +141,7 @@ describe('URL', () => {
 				res.should.have.status(200);
 				res.body.status.should.be.eql(true);
 				res.body.message.should.be.eql('Enjoy you URL');
-				res.body.url.should.be.eql('helloworld.com');
+				res.body.url.should.be.eql('http://whatsapp.com');
 				done();
 			});
 	});

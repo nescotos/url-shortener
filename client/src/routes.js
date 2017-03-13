@@ -6,6 +6,12 @@ app.config(($stateProvider, $urlRouterProvider) => {
   $stateProvider
   .state('home', {
     url: '/',
-    templateUrl: 'routes/home.html'
+    templateUrl: 'routes/home.html',
+    controller: 'homeController'
+  })
+  .state('redirector', {
+      url: '/:id',
+      templateUrl: 'routes/redirector.html',
+      controller: 'redirectorController'
   });
 });
