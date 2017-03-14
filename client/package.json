@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "karma start",
-    "start": "gulp serve"
+    "start": "gulp serve",
+    "build-dist": "gulp build"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,8 @@
   },
   "homepage": "https://github.com/nestor94/url-shortener#readme",
   "dependencies": {
-    "angular": "^1.6.3"
+    "angular": "^1.6.3",
+    "angular-ui-router": "^0.4.2"
   },
   "devDependencies": {
     "angular-mocks": "^1.6.3",

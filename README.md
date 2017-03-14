@@ -19,27 +19,29 @@
 `$ db.counters.insert({_id: 'url_counter', seq: 1})`
 
 
-###Testing Server
+###Testing and Running Server
 
 `$ cd api`
 
 `$ npm install`
 
-`$ npm test`
+`$ npm start`
 
-**You should see all test passing if everything is ok**
-
-###Running Server
+**In another console**
 
 `$ cd api`
 
-`$ npm start`
+`$ npm test`
+
+**You should see all test passing if everything is ok**
 
 ###Testing Client
 
 `$ cd client`
 
 `$ npm install`
+
+`$ npm run-script build-dist`
 
 `$ npm test`
 
