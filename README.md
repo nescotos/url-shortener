@@ -1,25 +1,25 @@
-##URL Shortener
+## URL Shortener
 
-###Required Dependencies:
+### Required Dependencies:
 
 - NodeJS 6.3.1 or greater
 - MongoDB 3.0 or greater
 
-###Packages Dependencies
+### Packages Dependencies
 - npm install -g mocha
 - npm install -g gulp-cli
 - npm install -g karma
 - npm install -g nodemon
 
-###Setting Up MongoDB Database
+### Setting Up MongoDB Database
 
-####Get into mongo shell then type:
+#### Get into mongo shell then type:
 `$ use urlshortener`
 
 `$ db.counters.insert({_id: 'url_counter', seq: 1})`
 
 
-###Testing and Running Server
+### Testing and Running Server
 
 `$ cd api`
 
@@ -35,7 +35,7 @@
 
 **You should see all test passing if everything is ok**
 
-###Testing Client
+### Testing Client
 
 `$ cd client`
 
@@ -47,7 +47,7 @@
 
 **You should see all test passing if everything is ok**
 
-###Running Client
+### Running Client
 
 `$ cd client`
 
